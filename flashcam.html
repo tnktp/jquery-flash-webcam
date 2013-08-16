@@ -1,0 +1,62 @@
+<html>
+<head>
+    <script language="JavaScript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script language="JavaScript" src="jquery.flashwebcam.js"></script>
+</head>
+<body>
+    <div id="webcam"></div>
+    <div id="controls">
+        <button id="play-btn">&#9658;</button>
+        <button id="record-btn">&#9679;</button>
+        <button id="stop-btn">&#9632;</button>
+    </div>
+<script>
+    $(document).ready(function() {
+        $('#record-btn').attr('disabled', true);
+        $('#stop-btn').attr('disabled', true);
+        $('#play-btn').attr('disabled', true);
+        $('#webcam').webcam({
+            onConnected: onConnected,
+            onRecording: function() {
+                $('#record-btn').attr('disabled', true);
+                $('#stop-btn').attr('disabled', false);
+                $('#play-btn').attr('disabled', true);
+            },
+            onStop: function() {
+                $('#record-btn').attr('disabled', false);
+                $('#stop-btn').attr('disabled', true);
+                $('#play-btn').attr('disabled', false);
+            },
+            onPlaying: function() {
+                $('#record-btn').attr('disabled', true);
+                $('#stop-btn').attr('disabled', false);
+                $('#play-btn').attr('disabled', true);
+            },
+            onPlaybackEnded: function() {
+                $('#record-btn').attr('disabled', false);
+                $('#stop-btn').attr('disabled', true);
+                $('#play-btn').attr('disabled', false);
+            },
+            width: 320,
+            height: 240
+        });
+
+        $('#record-btn').click(function() {
+            $.webcam.startRecording();
+        });
+
+        $('#stop-btn').click(function() {
+            $.webcam.stopRecording();
+        });
+
+        $('#play-btn').click(function() {
+            $.webcam.playRecording();
+        });
+
+        function onConnected() {
+            $('#record-btn').attr('disabled', false);
+        }
+    });
+</script>
+</body>
+</html>
