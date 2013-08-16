@@ -10,6 +10,7 @@
             $.webcam.onPlaying = opts.onPlaying;
             $.webcam.onPlaybackEnded = opts.onPlaybackEnded;
             $.webcam.onConnected = opts.onConnected;
+            $.webcam.onDisconnected = opts.onDisconnected;
             $.webcam.width = opts.width;
             $.webcam.height = opts.height;
             $.webcam.serverUrl = opts.serverUrl;
@@ -63,6 +64,7 @@
         onPlaying: function() {},
         onPlaybackEnded: function() {},
         onConnected: function() {},
+        onDisconnected: function() {},
         width: 640,
         height: 480,
         serverUrl: 'rtmp://rtmp.server/myapp'
@@ -79,6 +81,10 @@ function flashReady() {
 
 function serverConnected() {
     $.webcam.onConnected();
+}
+
+function serverDisconnected() {
+    $.webcam.onDisconnected();
 }
 
 function getServer() {

@@ -104,6 +104,7 @@ package {
             case 'NetConnection.Connect.Failed':
             case 'NetConnection.Connect.Reject':
             case 'NetConnection.Connect.Closed':
+                ExternalInterface.call('serverDisconnected');
                 nc = null;
                 break;
             case 'NetStream.Play.Stop':
