@@ -14,6 +14,7 @@
             $.webcam.width = opts.width;
             $.webcam.height = opts.height;
             $.webcam.serverUrl = opts.serverUrl;
+            $.webcam.videoName = opts.videoName;
             $.webcam.status = 'waiting';
             $.webcam.startRecording = function() {
                 this.status = 'recording';
@@ -34,7 +35,7 @@
 
         function populateObject(data) {
             var objectHtml = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" \
-                                id="' + data.id + '" width="' + data.width + '" height="' + (data.height + 100) + '" \
+                                id="' + data.id + '" width="' + data.width + '" height="' + data.height + '" \
                                 codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">\
                                     <param name="movie" value="WebMedia.swf" />\
                                     <param name="quality" value="high" />\
@@ -105,5 +106,9 @@ function getStatus() {
 
 function playbackEnded() {
     $.webcam.onPlaybackEnded();
+    $.webcam.status = 'stop';
 }
 
+function movieName() {
+    return $.webcam.videoName;
+}

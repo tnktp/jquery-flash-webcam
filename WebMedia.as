@@ -57,8 +57,8 @@ package {
         private function publish(name:String, record:Boolean):void {
             if (ns != null && nc != null && nc.connected) {
                 debug('in publish ' + name + ' ' + record);
-                movName = name;
                 ns.publish(name, record ? 'record' : null);
+                debug('Publishing ' + name);
             }
         }
 
@@ -67,7 +67,7 @@ package {
         }
 
         private function play(name:String):void {
-            if (ns == null && nc != null && nc.connected) {
+            if (nc != null && nc.connected) {
                 ns = new NetStream(nc);
                 ns.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler, false, 0, true);
                 ns.addEventListener(IOErrorEvent.IO_ERROR, streamErrorHandler, false, 0, true);
@@ -77,16 +77,18 @@ package {
                 ns.play(name);
                 playVideo.attachNetStream(ns);
                 addChild(playVideo);
+                currentVideo = playVideo;
+                debug('Playing ' + name);
             }
         }
 
-        private function closeStream(currentVideo:Video):void {
+        private function closeStream(current:Video):void {
             if (ns != null) {
                 ns.close();
                 ns = null;
             }
             currentVideo.clear();
-            removeChild(currentVideo);
+            removeChild(current);
         }
 
         private function netStatusHandler(event:NetStatusEvent):void {
@@ -96,6 +98,7 @@ package {
                 debug('connected ' + nc.connected);
                 initRecord();
                 ExternalInterface.call('serverConnected');
+                movName = ExternalInterface.call('movieName');
 
                 var statusTimer:Timer = new Timer(330, 0);
                 statusTimer.addEventListener(TimerEvent.TIMER, pollStatus);
@@ -109,6 +112,8 @@ package {
                 break;
             case 'NetStream.Play.Stop':
                 ExternalInterface.call('playbackEnded');
+                closeStream(currentVideo);
+                initRecord();
                 break;
             }
         }
@@ -144,7 +149,6 @@ package {
 
             cam = Camera.getCamera()
             cam.setMode(width, height, 25);
-            cam.setQuality(0, 100);
             debug('width: ' + cam.width);
             debug('height: ' + cam.height);
             debug('camera: ' + cam.name);
@@ -154,9 +158,9 @@ package {
             ns.attachAudio(Microphone.getMicrophone(-1));
             remoteVideo.attachCamera(Camera.getCamera());
             addChild(remoteVideo);
+            currentVideo = remoteVideo;
 
             var newStatus:String = ExternalInterface.call('getStatus');
-            debug('newstatus: ' + newStatus);
 
             ExternalInterface.addCallback('initFlash', initVideo);
             ExternalInterface.addCallback('serverConnect', rtmpConnect);
@@ -179,16 +183,13 @@ package {
                 debug('status changed to: ' + newStatus);
                 camStatus = newStatus;
                 if (newStatus == 'recording') {
-                    debug('publishing');
                     initRecord();
-                    publish('sergio', true);
-                    currentVideo = remoteVideo;
+                    publish(movName, true);
                 }
                 else if (newStatus == 'stop') {
                     closeStream(currentVideo);
                 }
                 else if (newStatus == 'play') {
-                    currentVideo = playVideo;
                     play(movName);
                 }
             }

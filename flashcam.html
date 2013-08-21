@@ -14,8 +14,9 @@
     $(document).ready(function() {
         $('#record-btn').attr('disabled', true);
         $('#stop-btn').attr('disabled', true);
-        $('#play-btn').attr('disabled', true);
+        $('#play-btn').attr('disabled', false);
         $('#webcam').webcam({
+            videoName: 'video-test',
             onConnected: function() {
                 $('#record-btn').attr('disabled', false);
             },
@@ -44,7 +45,7 @@
             },
             width: 320,
             height: 240,
-            serverUrl: 'rtmp://192.168.1.35'
+            serverUrl: 'rtmp://localhost/myapp'
         });
 
         $('#record-btn').click(function() {
