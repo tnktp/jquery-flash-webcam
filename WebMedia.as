@@ -17,6 +17,8 @@ package {
         private var cam:Camera;
         private var camStatus:String = 'None';
         private var movName:String;
+        private var videoWidth:int;
+        private var videoHeight:int;
 
         public function WebMedia() {
             Security.allowDomain('*');
@@ -92,13 +94,16 @@ package {
             switch (event.info.code) {
             case 'NetConnection.Connect.Success':
                 debug('connected ' + nc.connected);
-                initRecord();
-                ExternalInterface.call('serverConnected');
                 movName = ExternalInterface.call('movieName');
+
+                videoWidth = ExternalInterface.call('getWidth');
+                videoHeight = ExternalInterface.call('getHeight');
+                initVideo(videoWidth, videoHeight);
 
                 var statusTimer:Timer = new Timer(330, 0);
                 statusTimer.addEventListener(TimerEvent.TIMER, pollStatus);
                 statusTimer.start();
+                ExternalInterface.call('serverConnected');
                 break;
             case 'NetConnection.Connect.Failed':
             case 'NetConnection.Connect.Reject':
@@ -109,7 +114,6 @@ package {
             case 'NetStream.Play.Stop':
                 ExternalInterface.call('playbackEnded');
                 closeStream(currentVideo);
-                initRecord();
                 break;
             }
         }
@@ -134,17 +138,10 @@ package {
             ns.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler, false, 0, true);
             ns.addEventListener(IOErrorEvent.IO_ERROR, streamErrorHandler, false, 0, true);
             ns.addEventListener(AsyncErrorEvent.ASYNC_ERROR, streamErrorHandler, false, 0, true);
+            cam = Camera.getCamera();
+            cam.setMode(videoWidth, videoHeight, 25, false);
+            cam.setQuality(0, 100);
 
-            var width:int = ExternalInterface.call('getWidth');
-            var height:int = ExternalInterface.call('getHeight');
-
-            debug('jwidth: ' + width);
-            debug('jheight: ' + height);
-
-            initVideo(width, height);
-
-            cam = Camera.getCamera()
-            cam.setMode(width, height, 25);
             debug('width: ' + cam.width);
             debug('height: ' + cam.height);
             debug('camera: ' + cam.name);
