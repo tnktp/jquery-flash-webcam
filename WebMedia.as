@@ -62,10 +62,6 @@ package {
             }
         }
 
-        private function fromAS():void {
-            debug('fromas');
-        }
-
         private function play(name:String):void {
             if (nc != null && nc.connected) {
                 ns = new NetStream(nc);
@@ -165,7 +161,6 @@ package {
             ExternalInterface.addCallback('initFlash', initVideo);
             ExternalInterface.addCallback('serverConnect', rtmpConnect);
             ExternalInterface.addCallback('startRecording', publish);
-            ExternalInterface.addCallback('test', fromAS);
         }
 
         private function initVideo(w:int, h:int):void {
