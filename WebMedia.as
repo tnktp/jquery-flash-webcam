@@ -94,7 +94,6 @@ package {
             switch (event.info.code) {
             case 'NetConnection.Connect.Success':
                 debug('connected ' + nc.connected);
-                movName = ExternalInterface.call('movieName');
 
                 videoWidth = ExternalInterface.call('getWidth');
                 videoHeight = ExternalInterface.call('getHeight');
@@ -176,12 +175,14 @@ package {
                 camStatus = newStatus;
                 if (newStatus == 'recording') {
                     initRecord();
+                    movName = ExternalInterface.call('movieName');
                     publish(movName, true);
                 }
                 else if (newStatus == 'stop') {
                     closeStream(currentVideo);
                 }
                 else if (newStatus == 'play') {
+                    movName = ExternalInterface.call('movieName');
                     play(movName);
                 }
             }
