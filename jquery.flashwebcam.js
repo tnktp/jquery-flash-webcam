@@ -16,6 +16,7 @@
             $.webcam.serverUrl = opts.serverUrl;
             $.webcam.videoName = opts.videoName;
             $.webcam.status = 'waiting';
+            $.webcam.swfLocation = opts.swfLocation;
             $.webcam.startRecording = function() {
                 this.status = 'recording';
                 this.onRecording();
@@ -37,10 +38,10 @@
             var objectHtml = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" \
                                 id="' + data.id + '" width="' + data.width + '" height="' + data.height + '" \
                                 codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">\
-                                    <param name="movie" value="WebMedia.swf" />\
+                                    <param name="movie" value="' + data.swfLocation + '" />\
                                     <param name="quality" value="high" />\
                                     <param name="allowScriptAccess" value="always" />\
-                                    <embed src="WebMedia.swf" quality="high" bgcolor="#000000" \
+                                    <embed src="' + data.swfLocation + '" quality="high" bgcolor="#000000" \
                                         width="' + data.width + '" height="' + data.height + '" \
                                         name="webmediacapture" align="middle" \
                                         play="true" \
@@ -68,7 +69,8 @@
         onDisconnected: function() {},
         width: 640,
         height: 480,
-        serverUrl: 'rtmp://rtmp.server/myapp'
+        serverUrl: 'rtmp://rtmp.server/myapp',
+        swfLocation: 'WebMedia.swf'
     };
 }(jQuery));
 
